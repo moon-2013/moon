@@ -1,0 +1,35 @@
+      
+      
+    
+      <!DOCTYPE html>
+      <html>
+      <head>
+          <title >    الصفحة الرئيسية  </title>
+         
+      </head>   
+        
+         
+     
+      <script>
+        fetch("http://127.0.0.1:5000/api/users/me", {
+            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+        })
+        .then(response => response.json())
+        .then(data => {
+            document.body.innerHTML = `<h2>مرحبًا ${data.username}</h2>`;
+        });
+    </script>
+                   
+              
+         
+      <body>  
+           
+         
+          
+        </body>  
+          
+            
+        </html>
+    
+         
+             
