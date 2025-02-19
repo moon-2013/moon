@@ -10,6 +10,8 @@ from app.extensions import db, jwt
 from app.routes.auth import auth_bp
 from app.routes.users import users_bp   
 
+from flask_cors import CORS     
+
 from app.routes.home import home_bp    
 
                
