@@ -15,7 +15,7 @@ from app.routes.home import home_bp
                
 def create_app():
     app = Flask(__name__)
-    CORS(app, resources={r"/*": {"origins": "*"}})  # السماح لجميع المواقع بالوصول
+    CORS(app, resources={r"/*": {"origins": "*"}})   
                    
     # تهيئة الإضافات
     db.init_app(app)
