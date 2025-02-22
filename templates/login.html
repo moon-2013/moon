@@ -1,38 +1,155 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول وإنشاء حساب</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(to right, #4facfe, #00f2fe);
+            text-align: center;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            width: 350px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+            transition: transform 0.3s ease-in-out;
+        }
+
+        h2 {
+            color: #4facfe;
+        }
+
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            background: #4facfe;
+            border: none;
+            color: white;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #00c3ff;
+        }
+
+        p {
+            margin-top: 10px;
+            font-size: 14px;
+        }
+
+        .switch {
+            color: #4facfe;
+            cursor: pointer;
+        }
+
+        .container.shake {
+            animation: shake 0.3s;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            50% { transform: translateX(5px); }
+            75% { transform: translateX(-5px); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="auth-container">
+        <h2 id="form-title">إنشاء حساب</h2>
+        <form id="auth-form">
+            <input type="text" id="username" placeholder="اسم المستخدم" required>
+            <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+            <input type="password" id="password" placeholder="كلمة المرور" required>
+            <button type="submit" id="submit-btn">تسجيل</button>
+        </form>
+        <p id="message"></p>
+        <p>
+            لديك حساب؟ <span class="switch" id="toggle-login">تسجيل الدخول</span>
+        </p>
+    </div>
+
+    <script>
+        let isLogin = false;
+
+        document.getElementById('toggle-login').addEventListener('click', function () {
+            isLogin = !isLogin;
+            updateForm();
+        });
+
+        function updateForm() {
+            const title = document.getElementById('form-title');
+            const usernameField = document.getElementById('username');
+            const submitBtn = document.getElementById('submit-btn');
+
+            if (isLogin) {
+                title.innerText = "تسجيل الدخول";
+                usernameField.style.display = "none";
+                submitBtn.innerText = "دخول";
+                document.getElementById('toggle-login').innerText = "إنشاء حساب";
+            } else {
+                title.innerText = "إنشاء حساب";
+                usernameField.style.display = "block";
+                submitBtn.innerText = "تسجيل";
+                document.getElementById('toggle-login').innerText = "تسجيل الدخول";
+            }
+        }
+
+        document.getElementById('auth-form').addEventListener('submit', function (event) {
+            event.preventDefault();
+
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const username = isLogin ? null : document.getElementById('username').value;
+            const url = isLogin ? '/in' : '/up';
+
+            const data = isLogin ? { email, password } : { username, email, password };
+
+            fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.access_token || data.message) {
+                    document.getElementById('message').innerText = isLogin ? "تم تسجيل الدخول" : "تم إنشاء الحساب بنجاح";
+                } else {
+                    document.getElementById('auth-container').classList.add("shake");
+                    setTimeout(() => {
+                        document.getElementById('auth-container').classList.remove("shake");
+                    }, 300);
+                    document.getElementById('message').innerText = "خطأ في البيانات، حاول مرة أخرى!";
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>       
+   
+   
+   
+    
   
-    
-      <!DOCTYPE html>
-      <html>
-      <head>
-          <title>تسجيل الدخول</title>
-          <script>
-              function login() {
-                  let email = document.getElementById("email").value;
-                  let password = document.getElementById("password").value;
-      
-                  fetch("https://moon2013.pythonanywhere.com/api/auth/login", {
-                      method: "POST",
-                      headers: { "Content-Type": "application/json" },
-                      body: JSON.stringify({ email: email, password: password })
-                  })
-                  .then(response => response.json())
-                  .then(data => {
-                      if (data.access_token) {
-                          localStorage.setItem("token", data.access_token);
-                          window.location.href = "profile.html";
-                      } else {
-                          alert("خطأ في تسجيل الدخول");
-                      }
-                  });
-              }
-          </script>
-      </head>
-      <body>
-          <h2>تسجيل الدخول</h2>
-          <input type="email" id="email" placeholder="البريد الإلكتروني">
-          <input type="password" id="password" placeholder="كلمة المرور">
-          <button onclick="login()">تسجيل الدخول</button>
-          
-        </body>
-        </html>
-    
-         
