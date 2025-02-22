@@ -30,42 +30,36 @@ def create_app():
     app.register_blueprint(users_bp, url_prefix='/profile_me')
     app.register_blueprint(home_bp, url_prefix='/')
 
-    # ✅ إضافة Webhook داخل التطبيق
-    @app.route("/webhook", methods=["POST"])
-    def webhook():
-        """يستقبل Webhook من GitHub ويقوم بتحديث المشروع تلقائيًا"""
-        data = request.get_json()
-        if data and "ref" in data and data["ref"] == "refs/heads/main":  # تأكد أن التحديث للفرع الرئيسي
-            os.system("cd /home/moon2013/moon && git pull origin main")      
+    # ✅ إضافة Webhook داخل التطبيق. 
+    
    
-   
-   
+    import os
+import time
+
+@app.route("/webhook", methods=["POST"])
+def webhook():
+    """يستقبل Webhook من GitHub ويقوم بتحديث المشروع تلقائيًا"""
+    data = request.get_json()
+    if data and "ref" in data and data["ref"] == "refs/heads/main":  # تأكد أن التحديث للفرع الرئيسي
+        # تحديث المشروع من GitHub
+        os.system("cd /home/moon2013/moon && git pull origin main")
         
-    
-            
-   
-   
-    
         # إيقاف السيرفر الحالي
         os.system("pkill -f 'flask run'")
 
         # إعادة تشغيل السيرفر
         time.sleep(2)  # تأكد من أن السيرفر توقف قبل إعادة تشغيله
         os.system("python3 /home/moon2013/moon/run.py")  # قم بتشغيل السيرفر مجددًا باستخدام python3 run.py
-   
-   
-   
-   
-   
-          
-    
-    
-  
-  
-  
-            return "Repository updated successfully!", 200
-        return "Invalid request", 400
+        
+        # دفع التعديلات من الاستضافة إلى GitHub (إذا تم تعديل الملفات)
+        os.system("cd /home/moon2013/moon && git add .")
+        os.system("cd /home/moon2013/moon && git commit -m 'Automatic commit from server update'")
+        os.system("cd /home/moon2013/moon && git push origin main")  # دفع التعديلات إلى GitHub
 
+        return "Repository updated, server restarted, and changes pushed to GitHub!", 200
+    return "Invalid request", 400
+      
+     
     return app  
   
   
