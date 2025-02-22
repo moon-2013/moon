@@ -1,5 +1,5 @@
     
-    import os
+import os
 
 BASE_DIR = os.path.abspath(os.path.dirname(os.path.dirname(__file__)))  # المسار الرئيسي للمشروع
 DB_PATH = os.path.join(BASE_DIR, "app", "moon.db")  # وضع قاعدة البيانات داخل app
