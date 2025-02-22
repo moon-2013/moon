@@ -36,7 +36,33 @@ def create_app():
         """يستقبل Webhook من GitHub ويقوم بتحديث المشروع تلقائيًا"""
         data = request.get_json()
         if data and "ref" in data and data["ref"] == "refs/heads/main":  # تأكد أن التحديث للفرع الرئيسي
-            os.system("cd /home/moon2013/moon && git pull origin main")
+            os.system("cd /home/moon2013/moon && git pull origin main")      
+   
+   
+   
+        
+    
+            
+   
+   
+    
+        # إيقاف السيرفر الحالي
+        os.system("pkill -f 'flask run'")
+
+        # إعادة تشغيل السيرفر
+        time.sleep(2)  # تأكد من أن السيرفر توقف قبل إعادة تشغيله
+        os.system("python3 /home/moon2013/moon/run.py")  # قم بتشغيل السيرفر مجددًا باستخدام python3 run.py
+   
+   
+   
+   
+   
+          
+    
+    
+  
+  
+  
             return "Repository updated successfully!", 200
         return "Invalid request", 400
 
