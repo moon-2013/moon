@@ -77,21 +77,21 @@
 <body>
 
     <div class="container" id="auth-container">
-        <h2 id="form-title">إنشاء حساب</h2>
+        <h2 id="form-title">تسجيل الدخول</h2>
         <form id="auth-form">
-            <input type="text" id="username" placeholder="اسم المستخدم" required>
+            <input type="text" id="username" placeholder="اسم المستخدم">
             <input type="email" id="email" placeholder="البريد الإلكتروني" required>
             <input type="password" id="password" placeholder="كلمة المرور" required>
-            <button type="submit" id="submit-btn">تسجيل</button>
+            <button type="submit" id="submit-btn">دخول</button>
         </form>
         <p id="message"></p>
         <p>
-            لديك حساب؟ <span class="switch" id="toggle-login">تسجيل الدخول</span>
+            ليس لديك حساب؟ <span class="switch" id="toggle-login">إنشاء حساب</span>
         </p>
     </div>
 
-               <script>
-    let isLogin = false;
+<script>
+    let isLogin = true;  // ✅ جعل تسجيل الدخول هو الافتراضي
 
     document.getElementById('toggle-login').addEventListener('click', function () {
         isLogin = !isLogin;
@@ -135,10 +135,15 @@
         })
         .then(response => response.json())
         .then(data => {
-            if (data.access_token || data.message) {
-                document.getElementById('message').innerText = isLogin 
-                    ? "تم تسجيل الدخول بنجاح"
-                    : "تم إنشاء الحساب بنجاح";
+            if (data.access_token) {
+                localStorage.setItem("token", data.access_token);
+                localStorage.setItem("username", email);
+                document.getElementById('message').innerText = "تم تسجيل الدخول بنجاح!";
+                setTimeout(() => {
+                    window.location.href = "home.html";  // ✅ إعادة توجيه إلى الصفحة الرئيسية
+                }, 1000);
+            } else if (data.message) {
+                document.getElementById('message').innerText = "تم إنشاء الحساب بنجاح، يمكنك تسجيل الدخول الآن!";
             } else {
                 document.getElementById('auth-container').classList.add("shake");
                 setTimeout(() => {
@@ -153,12 +158,6 @@
         });
     });
 </script>
-   
-   
+
 </body>
-</html>       
-   
-   
-   
-    
-  
+</html>
