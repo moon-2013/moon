@@ -5,7 +5,7 @@ from app.models import User
                     
 users_bp = Blueprint('users', __name__)
                      
-@users_bp.route('/me', methods=['GET'])
+@users_bp.route('/', methods=['GET'])
 @jwt_required()
 def get_user():
     user_id = get_jwt_identity()
