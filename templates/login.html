@@ -90,62 +90,71 @@
         </p>
     </div>
 
-    <script>
-        let isLogin = false;
+               <script>
+    let isLogin = false;
 
-        document.getElementById('toggle-login').addEventListener('click', function () {
-            isLogin = !isLogin;
-            updateForm();
-        });
+    document.getElementById('toggle-login').addEventListener('click', function () {
+        isLogin = !isLogin;
+        updateForm();
+    });
 
-        function updateForm() {
-            const title = document.getElementById('form-title');
-            const usernameField = document.getElementById('username');
-            const submitBtn = document.getElementById('submit-btn');
+    function updateForm() {
+        const title = document.getElementById('form-title');
+        const usernameField = document.getElementById('username');
+        const submitBtn = document.getElementById('submit-btn');
 
-            if (isLogin) {
-                title.innerText = "تسجيل الدخول";
-                usernameField.style.display = "none";
-                submitBtn.innerText = "دخول";
-                document.getElementById('toggle-login').innerText = "إنشاء حساب";
-            } else {
-                title.innerText = "إنشاء حساب";
-                usernameField.style.display = "block";
-                submitBtn.innerText = "تسجيل";
-                document.getElementById('toggle-login').innerText = "تسجيل الدخول";
-            }
+        if (isLogin) {
+            title.innerText = "تسجيل الدخول";
+            usernameField.style.display = "none";
+            submitBtn.innerText = "دخول";
+            document.getElementById('toggle-login').innerText = "إنشاء حساب";
+        } else {
+            title.innerText = "إنشاء حساب";
+            usernameField.style.display = "block";
+            submitBtn.innerText = "تسجيل";
+            document.getElementById('toggle-login').innerText = "تسجيل الدخول";
         }
+    }
 
-        document.getElementById('auth-form').addEventListener('submit', function (event) {
-            event.preventDefault();
+    document.getElementById('auth-form').addEventListener('submit', function (event) {
+        event.preventDefault();
 
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const username = isLogin ? null : document.getElementById('username').value;
-            const url = isLogin ? '/in' : '/up';
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        const username = isLogin ? null : document.getElementById('username').value;
+        const url = isLogin 
+            ? 'https://moon2013.pythonanywhere.com/sing/in' 
+            : 'https://moon2013.pythonanywhere.com/sing/up';
 
-            const data = isLogin ? { email, password } : { username, email, password };
+        const data = isLogin ? { email, password } : { username, email, password };
 
-            fetch(url, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.access_token || data.message) {
-                    document.getElementById('message').innerText = isLogin ? "تم تسجيل الدخول" : "تم إنشاء الحساب بنجاح";
-                } else {
-                    document.getElementById('auth-container').classList.add("shake");
-                    setTimeout(() => {
-                        document.getElementById('auth-container').classList.remove("shake");
-                    }, 300);
-                    document.getElementById('message').innerText = "خطأ في البيانات، حاول مرة أخرى!";
-                }
-            });
+        fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.access_token || data.message) {
+                document.getElementById('message').innerText = isLogin 
+                    ? "تم تسجيل الدخول بنجاح"
+                    : "تم إنشاء الحساب بنجاح";
+            } else {
+                document.getElementById('auth-container').classList.add("shake");
+                setTimeout(() => {
+                    document.getElementById('auth-container').classList.remove("shake");
+                }, 300);
+                document.getElementById('message').innerText = "خطأ في البيانات، حاول مرة أخرى!";
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('message').innerText = "حدث خطأ، تحقق من الاتصال بالسيرفر!";
         });
-    </script>
-
+    });
+</script>
+   
+   
 </body>
 </html>       
    
