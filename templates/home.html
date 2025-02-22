@@ -7,14 +7,23 @@
 </head>   
 <body>  
     <h2 id="welcome-message">جاري تحميل البيانات...</h2>  
-      
+    <h3 id="user-name"></h3>
+
     <script>
+        const token = localStorage.getItem("token");
+        const username = localStorage.getItem("username");
+
+        if (!token) {
+            window.location.href = "index.html";  // ✅ إعادة التوجيه إذا لم يكن هناك تسجيل دخول
+        }
+
         fetch("https://moon2013.pythonanywhere.com/", {
-            headers: { "Authorization": "Bearer " + localStorage.getItem("token") }
+            headers: { "Authorization": "Bearer " + token }
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById("welcome-message").innerText = `مرحبًا ${data.message}`;
+            document.getElementById("welcome-message").innerText = data.message;
+            document.getElementById("user-name").innerText = `أهلاً، ${username}`;
         })
         .catch(error => {
             document.getElementById("welcome-message").innerText = "خطأ في تحميل البيانات!";
@@ -23,4 +32,3 @@
     </script>
 </body>  
 </html>
-         
