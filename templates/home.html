@@ -7,14 +7,14 @@
 </head>   
 <body>  
     <h2 id="welcome-message">جاري تحميل البيانات...</h2>  
-    <h3 id="user-name"></h3>
+    <button id="logout-btn">تسجيل الخروج</button>
 
     <script>
         const token = localStorage.getItem("token");
         const username = localStorage.getItem("username");
 
         if (!token) {
-            window.location.href = "login.html";  // ✅ إعادة التوجيه إذا لم يكن هناك تسجيل دخول
+            window.location.href = "login.html"; // إذا لم يكن هناك توكن، ارجع لصفحة تسجيل الدخول
         }
 
         fetch("https://moon2013.pythonanywhere.com/", {
@@ -22,12 +22,17 @@
         })
         .then(response => response.json())
         .then(data => {
-            document.getElementById("welcome-message").innerText = data.message;
-            document.getElementById("user-name").innerText = `أهلاً، ${username}`;
+            document.getElementById("welcome-message").innerText = `مرحبًا ${username} في منصة moon`;
         })
         .catch(error => {
             document.getElementById("welcome-message").innerText = "خطأ في تحميل البيانات!";
             console.error("Error:", error);
+        });
+
+        document.getElementById("logout-btn").addEventListener("click", function () {
+            localStorage.removeItem("token");
+            localStorage.removeItem("username");
+            window.location.href = "login.html"; // بعد تسجيل الخروج، يرجع المستخدم لصفحة تسجيل الدخول
         });
     </script>
 </body>  
