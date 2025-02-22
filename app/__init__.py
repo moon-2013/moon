@@ -38,8 +38,7 @@ def create_app():
     # ✅ إضافة Webhook داخل التطبيق. 
     
    
-    import os
-import time
+      
 
 @app.route("/webhook", methods=["POST"])
 def webhook():
