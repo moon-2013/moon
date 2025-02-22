@@ -14,7 +14,7 @@
         const username = localStorage.getItem("username");
 
         if (!token) {
-            window.location.href = "index.html";  // ✅ إعادة التوجيه إذا لم يكن هناك تسجيل دخول
+            window.location.href = "login.html";  // ✅ إعادة التوجيه إذا لم يكن هناك تسجيل دخول
         }
 
         fetch("https://moon2013.pythonanywhere.com/", {
