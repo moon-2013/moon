@@ -26,8 +26,8 @@ def create_app():
     jwt.init_app(app)
 
     # ✅ تسجيل المسارات
-    app.register_blueprint(auth_bp, url_prefix='/api/auth')
-    app.register_blueprint(users_bp, url_prefix='/api/users')
+    app.register_blueprint(auth_bp, url_prefix='/sing')
+    app.register_blueprint(users_bp, url_prefix='/profile_me')
     app.register_blueprint(home_bp, url_prefix='/')
 
     # ✅ إضافة Webhook داخل التطبيق
