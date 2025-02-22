@@ -138,7 +138,7 @@
                 if (data.access_token) {
                     localStorage.setItem("token", data.access_token);
                     localStorage.setItem("username", email);
-                    window.location.href = "index.html"; // توجيه المستخدم للصفحة الرئيسية
+                    window.location.href = "home.html"; // توجيه المستخدم للصفحة الرئيسية
                 } else {
                     document.getElementById('auth-container').classList.add("shake");
                     setTimeout(() => {
