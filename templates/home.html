@@ -1,39 +1,98 @@
 <!DOCTYPE html>
-<html lang="ar">
+<html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>الصفحة الرئيسية</title>
-</head>   
-<body>  
-    <h2 id="welcome-message">جاري تحميل البيانات...</h2>  
-    <button id="logout-btn">تسجيل الخروج</button>
+    <title>Moon - الصفحة الرئيسية</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@2.5.0/fonts/remixicon.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto max-w-3xl">
+        <!-- شريط التنقل العلوي -->
+        <nav class="bg-white border-b p-4 flex justify-between items-center">
+            <div class="flex items-center">
+                <img src="logo.png" alt="Moon" class="w-24 h-8">
+                <input type="text" placeholder="البحث" class="mr-4 bg-gray-100 rounded-full px-4 py-2">
+            </div>
+            <div class="flex space-x-4">
+                <i class="ri-home-line text-2xl"></i>
+                <i class="ri-messenger-line text-2xl"></i>
+                <i class="ri-add-circle-line text-2xl"></i>
+                <i class="ri-heart-line text-2xl"></i>
+                <img id="profile-pic" class="w-8 h-8 rounded-full cursor-pointer" alt="الصورة الشخصية">
+            </div>
+        </nav>
+
+        <!-- محتوى القصص -->
+        <div class="stories flex overflow-x-scroll py-4 bg-white mt-4">
+            <!-- سيتم إضافة القصص هنا ديناميكياً -->
+        </div>
+
+        <!-- منشورات الخلاصة -->
+        <div id="posts-container" class="mt-4">
+            <!-- سيتم إضافة المنشورات هنا ديناميكياً -->
+        </div>
+    </div>
 
     <script>
-        const token = localStorage.getItem("token");
-        const username = localStorage.getItem("username");
-
+        // التحقق من وجود التوكن
+        const token = localStorage.getItem('token');
         if (!token) {
-            window.location.href = "login.html"; // إذا لم يكن هناك توكن، ارجع لصفحة تسجيل الدخول
+            window.location.href = 'login.html';
         }
 
-        fetch("https://moon2013.pythonanywhere.com/", {
-            headers: { "Authorization": "Bearer " + token }
+        // جلب بيانات المستخدم
+        fetch('https://moon2013.pythonanywhere.com/api/users/me', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
         })
         .then(response => response.json())
-        .then(data => {
-            document.getElementById("welcome-message").innerText = `مرحبًا ${username} في منصة moon`;
+        .then(user => {
+            document.getElementById('profile-pic').src = user.profile_image || 'default-avatar.png';
         })
         .catch(error => {
-            document.getElementById("welcome-message").innerText = "خطأ في تحميل البيانات!";
-            console.error("Error:", error);
+            console.error('خطأ:', error);
+            localStorage.removeItem('token');
+            window.location.href = 'login.html';
         });
 
-        document.getElementById("logout-btn").addEventListener("click", function () {
-            localStorage.removeItem("token");
-            localStorage.removeItem("username");
-            window.location.href = "login.html"; // بعد تسجيل الخروج، يرجع المستخدم لصفحة تسجيل الدخول
+        // جلب المنشورات
+        fetch('https://moon2013.pythonanywhere.com/api/posts/feed', {
+            headers: {
+                'Authorization': `Bearer ${token}`
+            }
+        })
+        .then(response => response.json())
+        .then(posts => {
+            const postsContainer = document.getElementById('posts-container');
+            posts.forEach(post => {
+                const postElement = document.createElement('div');
+                postElement.classList.add('bg-white', 'mb-4', 'rounded-lg', 'shadow');
+                postElement.innerHTML = `
+                    <div class="flex items-center p-4">
+                        <img src="${post.author.profile_image}" class="w-10 h-10 rounded-full ml-2">
+                        <span>${post.author.username}</span>
+                    </div>
+                    <img src="${post.image_url}" class="w-full">
+                    <div class="p-4">
+                        <div class="flex space-x-4 mb-2">
+                            <i class="ri-heart-line text-2xl"></i>
+                            <i class="ri-chat-3-line text-2xl"></i>
+                            <i class="ri-send-plane-line text-2xl mr-auto"></i>
+                        </div>
+                        <p>${post.likes_count} إعجاب</p>
+                        <p><strong>${post.author.username}</strong> ${post.caption}</p>
+                        <p class="text-gray-500">عرض التعليقات (${post.comments_count})</p>
+                    </div>
+                `;
+                postsContainer.appendChild(postElement);
+            });
+        })
+        .catch(error => {
+            console.error('خطأ في جلب المنشورات:', error);
         });
     </script>
-</body>  
+</body>
 </html>
